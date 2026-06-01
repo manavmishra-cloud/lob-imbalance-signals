@@ -60,16 +60,46 @@ lob-imbalance-signals/
 - Book-depth ratio (bid-side vs ask-side cumulative volume)
 - Microprice deviation from mid
 
-## Current results
+## Status
 
-*In development — results table will populate as models complete.*
+**Infrastructure complete · awaiting real data.**
+
+The full pipeline (LOBSTER parser, OFI feature engineering, walk-forward CV harness, baseline models, evaluation utilities) is implemented and validated end-to-end on synthetic data. Real research results pending availability of LOBSTER sample files (or equivalent real LOB data — Binance L2 capture is a planned fallback).
+
+### Synthetic data pipeline check
+
+A built-in synthetic LOB generator (`src/data/synthetic.py`) produces LOBSTER-format files that exercise the full pipeline. Pipeline-validation run on 99k synthetic events at horizon h=5:
+
+| Model | Accuracy | Directional Accuracy | Notes |
+|---|---|---|---|
+| Persistence | 45.0% | 25.8% | dies to class imbalance |
+| Linear (OFI) | 78.5% | 0.05% | learns trivial "predict 0" rule |
+| XGBoost | 76.9% | 18.1% | makes non-zero predictions, no real signal in synthetic data |
+
+These results confirm the pipeline runs cleanly. They do **not** represent real research findings — the synthetic generator does not model true OFI → future-return causality. Real LOBSTER data is expected to show learnable signal, consistent with the published literature (Cont/Kukanov/Stoikov 2014, Sirignano/Cont 2019).
+
+### Current results (real data)
 
 | Model | Horizon | Accuracy | Sharpe (paper portfolio) |
 |---|---|---|---|
-| Linear (OFI) | 1s | TBD | TBD |
-| XGBoost | 1s | TBD | TBD |
-| LSTM | 1s | TBD | TBD |
-| **Transformer** | **1s** | **TBD** | **TBD** |
+| Linear (OFI) | 1s | pending real data | — |
+| XGBoost | 1s | pending real data | — |
+| LSTM | 1s | pending real data | — |
+| **Transformer** | **1s** | **pending real data** | **—** |
+
+## Quick start — synthetic data pipeline test
+
+```bash
+# Set up environment
+python3 -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+
+# Generate synthetic LOB data
+python3 -m src.data.synthetic --n-events 100000 --levels 5
+
+# Run baselines (persistence, linear, XGBoost) with walk-forward CV
+python3 -m src.training.train_baselines --ticker SYNTH --target-horizon 5
+```
 
 ## References
 

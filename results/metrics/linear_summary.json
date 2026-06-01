@@ -1,0 +1,41 @@
+{
+  "n_folds": 4,
+  "accuracy_mean": 0.784581409355551,
+  "accuracy_std": 0.008580118709639883,
+  "directional_accuracy_mean": 0.0004746750033736674,
+  "directional_accuracy_std": 0.0005490922889033573,
+  "total_train_size_final": 79699,
+  "test_size_per_fold": 9962,
+  "model": "linear",
+  "target_horizon": 5,
+  "ticker": "SYNTH",
+  "pooled_accuracy": 0.7845814093555511,
+  "pooled_directional_accuracy": 0.00046598322460391424,
+  "pooled_confusion": [
+    [
+      4,
+      3675,
+      0
+    ],
+    [
+      3,
+      31260,
+      1
+    ],
+    [
+      0,
+      4905,
+      0
+    ]
+  ],
+  "pooled_class_precision": {
+    "-1": 0.5714285714285714,
+    "0": 0.7846385542168675,
+    "1": 0.0
+  },
+  "pooled_class_recall": {
+    "-1": 0.0010872519706441968,
+    "0": 0.9998720573183214,
+    "1": 0.0
+  }
+}

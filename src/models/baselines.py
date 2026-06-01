@@ -26,8 +26,8 @@ class LinearOFIBaseline:
 
     def __init__(self, C: float = 1.0, max_iter: int = 200):
         self.scaler = StandardScaler()
+        # multi_class param removed in sklearn 1.5+; lbfgs handles multi-class natively.
         self.clf = LogisticRegression(
-            multi_class="multinomial",
             solver="lbfgs",
             C=C,
             max_iter=max_iter,
