@@ -27,9 +27,9 @@
 
   - **[LOBSTER](https://lobsterdata.com/)** academic samples for AAPL, GOOG, MSFT, INTC, AMZN
   - (Optional extension) Live Binance L2 order book snapshots for crypto evaluation
-
   ## Planned repo structure
 
+  ```
   lob-imbalance-signals/
   ├── README.md
   ├── LICENSE
@@ -50,6 +50,8 @@
   │   ├── figures/             # Saved plots
   │   └── metrics/             # JSON results per model
   └── tests/                   # Unit tests
+  ```
+
 
   ## Key features (engineered)
 
