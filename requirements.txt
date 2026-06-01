@@ -1,0 +1,42 @@
+# Core data manipulation
+numpy>=1.24
+pandas>=2.0
+pyarrow>=14.0          # parquet storage for processed data
+
+# Visualization
+matplotlib>=3.7
+seaborn>=0.13
+plotly>=5.18
+
+# Notebooks
+jupyter>=1.0
+ipykernel>=6.25
+ipywidgets>=8.1
+
+# Data fetching
+requests>=2.31
+tqdm>=4.66
+
+# Statistics & feature engineering
+scipy>=1.11
+statsmodels>=0.14
+scikit-learn>=1.4
+
+# Tree models (for baselines)
+xgboost>=2.0
+lightgbm>=4.1
+
+# Deep learning (for LSTM and Transformer models — install when ready)
+# torch>=2.2
+# torchaudio>=2.2
+
+# Hyperparameter tuning
+optuna>=3.4
+
+# Testing
+pytest>=7.4
+pytest-cov>=4.1
+
+# Code quality (optional)
+black>=23.12
+ruff>=0.1
