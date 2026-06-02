@@ -5,6 +5,7 @@
 ![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.2-EE4C2C?logo=pytorch&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green)
+![Tests](https://github.com/manavmishra-cloud/lob-imbalance-signals/actions/workflows/tests.yml/badge.svg)
 ![Status](https://img.shields.io/badge/status-in_development-yellow)
 
 ## Research question

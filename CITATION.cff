@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+title: "lob-imbalance-signals: Order flow imbalance features and transformer models for limit order book prediction"
+abstract: >
+  An open-source implementation and benchmark of order flow imbalance (OFI)
+  features for short-horizon mid-price prediction on limit order book data.
+  Implements classical OFI regression (Cont, Kukanov, Stoikov 2014), XGBoost,
+  and transformer-based sequence models under walk-forward cross-validation
+  with leakage purging. Designed to consume LOBSTER-format L2 book data.
+authors:
+  - family-names: Mishra
+    given-names: Manav
+    affiliation: Vellore Institute of Technology
+    email: manavmishra260205@gmail.com
+repository-code: "https://github.com/manavmishra-cloud/lob-imbalance-signals"
+keywords:
+  - limit order book
+  - order flow imbalance
+  - market microstructure
+  - high frequency trading
+  - LOBSTER
+  - transformer
+  - quantitative finance
+license: MIT
