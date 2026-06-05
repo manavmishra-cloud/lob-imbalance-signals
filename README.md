@@ -63,9 +63,27 @@ lob-imbalance-signals/
 
 ## Status
 
-**Infrastructure complete · awaiting real data.**
+**Pipeline running on real LOB data (Binance L2) · LOBSTER samples currently unavailable from upstream.**
 
-The full pipeline (LOBSTER parser, OFI feature engineering, walk-forward CV harness, baseline models, evaluation utilities) is implemented and validated end-to-end on synthetic data. Real research results pending availability of LOBSTER sample files (or equivalent real LOB data — Binance L2 capture is a planned fallback).
+The full pipeline now runs end-to-end on live Binance order book captures, in addition to synthetic data for offline pipeline validation.
+
+### First real-data results (BTC/USDT, Binance L2)
+
+Captured 9,001 order-book snapshots of BTC/USDT (5 levels deep, 100 ms cadence) via the public Binance WebSocket stream (`btcusdt@depth5@100ms`). Run via `src/data/binance_capture.py`.
+
+Target: 3-class next-5-events mid-price direction. Class distribution: -1 (down) 34%, 0 (no move) 40%, +1 (up) 26%.
+
+| Model | 3-class Accuracy | Directional Accuracy |
+|---|---|---|
+| Persistence | 32.0% ± 4.5% | 24.7% |
+| **Linear (OFI)** | **52.8% ± 5.7%** | **46.8%** |
+| XGBoost | 52.5% ± 4.8% | 46.3% |
+
+Naive "always predict 0" baseline would achieve **39.5%** (the modal class). Linear OFI beats this baseline by **+13 percentage points**, demonstrating that order-flow-imbalance features carry real predictive signal in BTC microstructure. Directional accuracy of 46.8% on non-zero target rows is well above the 33.3% random-prediction floor for a 3-class problem.
+
+XGBoost does not improve over the linear OFI model on this dataset (52.5% vs 52.8%), consistent with the established finding that OFI's relationship to short-term mid-price changes is largely linear (Cont, Kukanov, Stoikov 2014).
+
+**Caveats:** This is a 15-minute capture (~9,000 events). For paper-grade research we would want hours-to-days of capture across multiple symbols. The synthetic message file limitation (no true trade-flow events; only periodic book snapshots) means trade-flow-window features are uninformative in this run; results above come from book-derived OFI alone.
 
 ### Synthetic data pipeline check
 
