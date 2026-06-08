@@ -1,0 +1,41 @@
+{
+  "n_folds": 10,
+  "accuracy_mean": 0.7896915809947208,
+  "accuracy_std": 0.029169757188543876,
+  "directional_accuracy_mean": 0.23851985041203522,
+  "directional_accuracy_std": 0.037278803008039686,
+  "total_train_size_final": 68389,
+  "test_size_per_fold": 3599,
+  "model": "xgboost",
+  "target_horizon": 5,
+  "ticker": "BTCUSDT",
+  "pooled_accuracy": 0.7896915809947208,
+  "pooled_directional_accuracy": 0.23769696969696968,
+  "pooled_confusion": [
+    [
+      816,
+      3142,
+      36
+    ],
+    [
+      424,
+      26460,
+      856
+    ],
+    [
+      27,
+      3084,
+      1145
+    ]
+  ],
+  "pooled_class_precision": {
+    "-1": 0.6440410418310971,
+    "0": 0.8095208957963654,
+    "1": 0.5621011291114384
+  },
+  "pooled_class_recall": {
+    "-1": 0.20430645968953431,
+    "0": 0.9538572458543619,
+    "1": 0.26903195488721804
+  }
+}

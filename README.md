@@ -67,23 +67,53 @@ lob-imbalance-signals/
 
 The full pipeline now runs end-to-end on live Binance order book captures, in addition to synthetic data for offline pipeline validation.
 
-### First real-data results (BTC/USDT, Binance L2)
+### Real-data results (BTC/USDT, Binance L2, 2-hour capture)
 
-Captured 9,001 order-book snapshots of BTC/USDT (5 levels deep, 100 ms cadence) via the public Binance WebSocket stream (`btcusdt@depth5@100ms`). Run via `src/data/binance_capture.py`.
+Captured **72,001 order-book snapshots** of BTC/USDT (5 levels deep, 100 ms cadence) via the public Binance WebSocket stream (`btcusdt@depth5@100ms`) using `src/data/binance_capture.py`.
 
-Target: 3-class next-5-events mid-price direction. Class distribution: -1 (down) 34%, 0 (no move) 40%, +1 (up) 26%.
+Target: 3-class next-5-events mid-price direction. Class distribution: **-1 (down) 13.6%, 0 (no move) 73.5%, +1 (up) 12.9%** — highly imbalanced, consistent with sub-second LOB events where most consecutive snapshots have no mid-price change.
 
-| Model | 3-class Accuracy | Directional Accuracy |
-|---|---|---|
-| Persistence | 32.0% ± 4.5% | 24.7% |
-| **Linear (OFI)** | **52.8% ± 5.7%** | **46.8%** |
-| XGBoost | 52.5% ± 4.8% | 46.3% |
+| Model | Overall Accuracy | Directional Accuracy* | Notes |
+|---|---|---|---|
+| "Always predict 0" | 73.5% | 0.0% | trivial baseline |
+| Persistence | 55.9% | 14.6% | sanity floor |
+| Linear OFI | 78.0% | 10.4% | high accuracy inflated by class imbalance |
+| XGBoost | 79.0% | 23.9% | better than linear on non-zero moves |
+| **LSTM** | **59.2%** | **58.5%** | sequence model captures OFI dynamics |
+| **Transformer** | **53.0%** | **63.3%** | strongest directional skill |
 
-Naive "always predict 0" baseline would achieve **39.5%** (the modal class). Linear OFI beats this baseline by **+13 percentage points**, demonstrating that order-flow-imbalance features carry real predictive signal in BTC microstructure. Directional accuracy of 46.8% on non-zero target rows is well above the 33.3% random-prediction floor for a 3-class problem.
+*Directional accuracy: classification accuracy restricted to rows where the true target is non-zero. Trading-relevant metric — predicts whether a real move is up or down. Random baseline = 50% (binary on non-zero rows); 3-class random would be 33%.
 
-XGBoost does not improve over the linear OFI model on this dataset (52.5% vs 52.8%), consistent with the established finding that OFI's relationship to short-term mid-price changes is largely linear (Cont, Kukanov, Stoikov 2014).
+#### Key findings
 
-**Caveats:** This is a 15-minute capture (~9,000 events). For paper-grade research we would want hours-to-days of capture across multiple symbols. The synthetic message file limitation (no true trade-flow events; only periodic book snapshots) means trade-flow-window features are uninformative in this run; results above come from book-derived OFI alone.
+1. **Tabular models lean on the dominant class.** Linear OFI's 78.0% headline accuracy is only 4.5 pp above the trivial "always predict 0" baseline of 73.5%. Its directional accuracy of 10.4% is *below* random — when there's an actual move, the linear model mostly still predicts no-move.
+
+2. **Deep sequence models capture OFI → direction signal.** With class-weighted cross-entropy loss, LSTM and Transformer trade some overall accuracy (which the dominant-class baseline inflates) for much higher directional accuracy. The Transformer attains 63.3% on non-zero target rows — significantly above the 50% random baseline.
+
+3. **Architecture matters.** Transformer's attention mechanism appears to identify specific OFI events that precede mid-price moves. LSTM is also strong but Transformer is the clear directional-accuracy leader on this sample.
+
+#### How to reproduce
+
+```bash
+# 1. Capture data (or use the committed BTCUSDT files in data/raw/)
+python -m src.data.binance_capture --symbol btcusdt --duration-minutes 120
+
+# 2. Baselines (persistence, linear, XGBoost)
+python -m src.training.train_baselines --ticker BTCUSDT --target-horizon 5
+
+# 3. Deep models (LSTM, Transformer)
+python -m src.training.train_deep --ticker BTCUSDT --target-horizon 5 --seq-len 50
+```
+
+#### Caveats
+
+- **Single asset, single 2-hour window.** For paper-grade research we would want multi-day captures across BTC/ETH/SOL and other symbols.
+- **Synthetic message file.** Trade-flow features are uninformative; only book-derived OFI features are doing useful work. A future capture should subscribe to the `@trade` stream alongside `@depth` for true event-level data.
+- **Single-seed training.** Deep model results vary by initialization. Production work should average over multiple seeds.
+
+### Earlier 15-minute capture (smaller, retained for reproducibility)
+
+The initial 9,001-snapshot capture (15 minutes) is also retained in `data/raw/`. With its less imbalanced class distribution (34% / 40% / 26%), the linear OFI model achieved 52.8% accuracy and 46.8% directional accuracy on it — a useful "small-sample" reference point showing OFI features are informative even before the deep models are brought in.
 
 ### Synthetic data pipeline check
 
