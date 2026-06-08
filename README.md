@@ -84,6 +84,8 @@ Target: 3-class next-5-events mid-price direction. Class distribution: **-1 (dow
 
 *Directional accuracy: classification accuracy restricted to rows where the true target is non-zero. Trading-relevant metric — predicts whether a real move is up or down. Random baseline = 50% (binary on non-zero rows); 3-class random would be 33%.
 
+![Overall vs directional accuracy across models](results/binance_2h/figures/accuracy_comparison.png)
+
 #### Key findings
 
 1. **Tabular models lean on the dominant class.** Linear OFI's 78.0% headline accuracy is only 4.5 pp above the trivial "always predict 0" baseline of 73.5%. Its directional accuracy of 10.4% is *below* random — when there's an actual move, the linear model mostly still predicts no-move.
