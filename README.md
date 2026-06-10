@@ -8,6 +8,8 @@
 ![Tests](https://github.com/manavmishra-cloud/lob-imbalance-signals/actions/workflows/tests.yml/badge.svg)
 ![Status](https://img.shields.io/badge/status-in_development-yellow)
 
+📄 **Paper draft:** [`paper/main.tex`](paper/main.tex) — *Directional Accuracy in Limit Order Book Prediction: Sequence Models vs Tabular ML on BTC/USDT* (8-10 pages, draft v1).
+
 ## Research question
 
 Can short-horizon (1s–30s) price direction be predicted from limit order book imbalance features using attention-based neural networks, beating classical OFI baselines from the microstructure literature?
